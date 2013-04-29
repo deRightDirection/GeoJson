@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Spatial;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.SqlServer.Types;
 using Newtonsoft.Json;
 
 namespace GeoJsonLibrary
@@ -107,7 +107,7 @@ namespace GeoJsonLibrary
             return result;
         }
 
-        private SqlGeography GetGeometry(object objectToConvertToGeoJson)
+        private DbGeography GetGeometry(object objectToConvertToGeoJson)
         {
             Type type = objectToConvertToGeoJson.GetType();
             bool hasGeometryProperty = false;
@@ -117,9 +117,9 @@ namespace GeoJsonLibrary
                 var geoJsonAttribute = property.GetCustomAttribute<GeoJsonGeometryAttribute>();
                 if (geoJsonAttribute != null)
                 {
-                    if (property.PropertyType == typeof(SqlGeography)) 
+                    if (property.PropertyType == typeof(DbGeography)) 
                     {
-                        return property.GetValue(objectToConvertToGeoJson) as SqlGeography;
+                        return property.GetValue(objectToConvertToGeoJson) as DbGeography;
                     }
                     // TODO: indien het geen primitief type is, alle properties van het type doorlopen en indien er niet primitieve typen
                     // TODO: tussen zitten de class voorzien van het attribuut dat alleen expliciet aangegeven members worden omgezet naar json
@@ -134,7 +134,7 @@ namespace GeoJsonLibrary
                     {
                         if(string.Equals(geometryClassAttributePropertyName, property.Name, StringComparison.InvariantCultureIgnoreCase))
                         {
-                            return property.GetValue(objectToConvertToGeoJson) as SqlGeography;
+                            return property.GetValue(objectToConvertToGeoJson) as DbGeography;
                         }
                     }
                 }

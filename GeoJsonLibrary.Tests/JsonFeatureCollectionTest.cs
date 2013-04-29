@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data.Spatial;
 using System.Spatial;
-using Microsoft.SqlServer.Types;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 namespace GeoJsonLibrary.Tests
@@ -27,7 +26,7 @@ namespace GeoJsonLibrary.Tests
             var list = new List<TestEntity4>() { subEntity, subEntity, subEntity };
             _entity = new TestEntity()
             {
-                Geometry = SqlGeography.Point(10, 10, 4326),
+                Geometry = GeoUtils.CreatePoint(10,10),
                 Name = "b",
                 Value = 1,
                 NotInUse = 0,
@@ -37,7 +36,7 @@ namespace GeoJsonLibrary.Tests
             };
             _entityWithPropertyAttributeGeography = new TestEntity3()
             {
-                Geometry = SqlGeography.Point(10, 10, 4326),
+                Geometry = GeoUtils.CreatePoint(10,10),
                 Name = "b",
                 Value = 1,
                 NotInUse = 0,
