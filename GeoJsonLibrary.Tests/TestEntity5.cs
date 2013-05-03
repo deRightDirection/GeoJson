@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Spatial;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.SqlServer.Types;
 
 namespace GeoJsonLibrary.Tests
 {
@@ -11,7 +11,7 @@ namespace GeoJsonLibrary.Tests
     [GeoJsonGeometry("Geometry")]
     public class TestEntity5
     {
-        public SqlGeography Geometry { get; set; }
+        public DbGeography Geometry { get; set; }
 
         public int Value { get; set; }
 
