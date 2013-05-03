@@ -87,11 +87,7 @@ namespace GeoJsonLibrary
                 var geoJsonAttribute = property.GetCustomAttribute<GeoJsonGeometryAttribute>();
                 if (geoJsonAttribute != null)
                 {
-<<<<<<< HEAD
-                    if (property.PropertyType == typeof(SqlGeography))
-=======
-                    if (property.PropertyType == typeof(DbGeography)) 
->>>>>>> 6a4d4b3554c536de1f3dc2e7227efa7a37f86a3d
+                    if (property.PropertyType == typeof(DbGeography))
                     {
                         return property.GetValue(objectToConvertToGeoJson) as DbGeography;
                     }
