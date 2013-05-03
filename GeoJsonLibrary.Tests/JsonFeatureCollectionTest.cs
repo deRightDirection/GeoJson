@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data.Spatial;
 using System.Spatial;
-using Microsoft.SqlServer.Types;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 
@@ -37,7 +36,7 @@ namespace GeoJsonLibrary.Tests
         [TestMethod]
         public void Convert_To_GeoJson_List_As_Json_With_Rename_Of_Property()
         {
-            var list = new List<TestEntity5>() { new TestEntity5() { Geometry = SqlGeography.Point(10, 10, 4326) } };
+            var list = new List<TestEntity5>() { new TestEntity5() { Geometry = GeoUtils.CreatePoint(10, 10) } };
             _featureCollection.AddFeatures<List<TestEntity5>>(list);
             var result = _featureCollection.ToJson();
             var json = "{\"type\":\"FeatureCollection\",\"features\":[{\"geometry\":{\"coordinates\":[10.0,10.0],\"type\":\"Point\"},\"type\":\"Feature\",\"properties\":{\"waarde\":0,\"getal\":0}}]}";
@@ -114,7 +113,7 @@ namespace GeoJsonLibrary.Tests
             var list = new List<TestEntity4>() { subEntity, subEntity, subEntity };
             _entity = new TestEntity()
             {
-                Geometry = SqlGeography.Point(10, 10, 4326),
+                Geometry = GeoUtils.CreatePoint(10, 10),
                 Name = "b",
                 Value = 1,
                 NotInUse = 0,
@@ -124,7 +123,7 @@ namespace GeoJsonLibrary.Tests
             };
             _entityWithPropertyAttributeGeography = new TestEntity3()
             {
-                Geometry = SqlGeography.Point(10, 10, 4326),
+                Geometry = GeoUtils.CreatePoint(10, 10),
                 Name = "b",
                 Value = 1,
                 NotInUse = 0,
