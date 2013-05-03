@@ -9,11 +9,14 @@ namespace GeoJsonLibrary
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Property, AllowMultiple = true, Inherited = true)]
     public class GeoJsonPropertyAttribute : Attribute
     {
-        public GeoJsonPropertyAttribute(string propertyName = "")
+        public GeoJsonPropertyAttribute()
         {
-            PropertyName = propertyName;
+            PropertyName = string.Empty;
+            JsonPropertyName = string.Empty;
         }
 
-        public string PropertyName { get; private set; }
+        public string JsonPropertyName { get; set; }
+
+        public string PropertyName { get; set; }
     }
 }
