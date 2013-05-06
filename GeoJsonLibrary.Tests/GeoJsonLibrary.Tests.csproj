@@ -57,6 +57,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="GeoJsonGeometryTest.cs" />
     <Compile Include="TestEntity3.cs" />
     <Compile Include="JsonFeatureCollectionTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

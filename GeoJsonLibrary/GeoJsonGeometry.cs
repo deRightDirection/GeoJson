@@ -24,7 +24,7 @@ namespace GeoJsonLibrary
         }
 
         [JsonProperty("coordinates")]
-        public double[] Coordinates { get { return new List<double>() { Latitude, Longitude }.ToArray(); } }
+        public double[] Coordinates { get { return new List<double>() { Longitude, Latitude }.ToArray(); } }
 
         [JsonProperty("type")]
         public string Type { get { return "Point"; } }
