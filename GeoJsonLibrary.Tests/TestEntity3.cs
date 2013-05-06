@@ -7,16 +7,11 @@ using System.Threading.Tasks;
 
 namespace GeoJsonLibrary.Tests
 {
-    [GeoJsonProperty("Value")]
+    [GeoJsonProperty(PropertyName = "Value")]
     public class TestEntity3
     {
         [GeoJsonGeometry("Geometry")]
         public DbGeography Geometry { get; set; }
-
-        public int Value { get; set; }
-
-        [GeoJsonProperty]
-        public List<string> Values { get; set; }
 
         [GeoJsonProperty]
         public string Name { get; set; }
@@ -28,5 +23,10 @@ namespace GeoJsonLibrary.Tests
 
         [GeoJsonProperty]
         public List<TestEntity4> SubGeometries { get; set; }
+
+        public int Value { get; set; }
+
+        [GeoJsonProperty]
+        public List<string> Values { get; set; }
     }
 }

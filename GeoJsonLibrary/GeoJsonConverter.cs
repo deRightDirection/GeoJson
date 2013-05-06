@@ -12,6 +12,12 @@ namespace GeoJsonLibrary
 {
     internal class GeoJsonConverter
     {
+        public T ConvertFromGeoJson<T>(string geojson)
+        {
+            throw new NotImplementedException("not implemented in version 1.0 of this library");
+            return default(T);
+        }
+
         /// <summary>
         /// Converts an object or a list of objects to geojson representation
         /// </summary>
@@ -42,66 +48,30 @@ namespace GeoJsonLibrary
         {
             GeoJsonFeature feature = new GeoJsonFeature();
             var geometry = GetGeometry(objectToConvert);
-            feature.Geometry =  new GeoJsonGeometry(geometry);
+            feature.Geometry = new GeoJsonGeometry(geometry);
             feature.Properties = GetFeatureData(objectToConvert);
             featureCollection.Features.Add(feature);
         }
 
-        private Type GetTypeOfList(Type objectToConvert)
+        private Dictionary<string, object> GetFeatureData(object objectToConvertToGeoJson)
         {
-            foreach (Type interfaceType in objectToConvert.GetInterfaces())
-            {
-                var isGenericType = interfaceType.IsGenericType;
-                var isIlistOrIEnumerable = interfaceType.GetGenericTypeDefinition() == typeof(IList<>) || interfaceType.GetGenericTypeDefinition() == typeof(IEnumerable<>);
-                if (isGenericType && isIlistOrIEnumerable)
-                {
-                    return objectToConvert.GetGenericArguments()[0];
-                }
-            }
-            return null;
-        }
-
-        public T ConvertFromGeoJson<T>(string geojson)
-        {
-            throw new NotImplementedException("not implemented in version 1.0 of this library");
-            return default(T);
-        }
-
-        private  Dictionary<string, object> GetFeatureData(object objectToConvertToGeoJson)
-        {
-            var result = new Dictionary<string,object>();
+            var result = new Dictionary<string, object>();
             Type type = objectToConvertToGeoJson.GetType();
-            List<string> propertyClassAtrributes = GetPropertyClassAttributes(type);
-            foreach(var property in type.GetProperties())
+            var propertyClassAtrributes = GetPropertyClassAttributes(type);
+            foreach (var property in type.GetProperties())
             {
+                var propertyName = property.Name.ToLowerInvariant();
                 var geoJsonPropertyAttribute = property.GetCustomAttribute<GeoJsonPropertyAttribute>();
-                var name = property.Name.ToLowerInvariant();
-                if (geoJsonPropertyAttribute != null)
+                var geoJsonClassPropertyAttribute = propertyClassAtrributes.Where(a => a.PropertyName.Equals(propertyName, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
+                if (geoJsonPropertyAttribute != null || geoJsonClassPropertyAttribute != null)
                 {
+                    var name = GetPropertyName(property, geoJsonPropertyAttribute);
+                    if (name.Equals(propertyName, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        name = GetPropertyName(property, geoJsonClassPropertyAttribute);
+                    }
                     var value = property.GetValue(objectToConvertToGeoJson);
                     result.Add(name, value);
-                }
-                else
-                {
-                    if (propertyClassAtrributes.Contains(name))
-                    {
-                        var value = property.GetValue(objectToConvertToGeoJson);
-                        result.Add(name, value);
-                    }
-                }
-            }
-            return result;
-        }
-
-        private List<string> GetPropertyClassAttributes(Type type)
-        {
-            List<string> result = new List<string>();
-            var attributes = type.GetCustomAttributes<GeoJsonPropertyAttribute>(true);
-            foreach (var attribute in attributes)
-            {
-                if (!string.IsNullOrEmpty(attribute.PropertyName))
-                {
-                    result.Add(attribute.PropertyName.ToLowerInvariant());
                 }
             }
             return result;
@@ -117,7 +87,7 @@ namespace GeoJsonLibrary
                 var geoJsonAttribute = property.GetCustomAttribute<GeoJsonGeometryAttribute>();
                 if (geoJsonAttribute != null)
                 {
-                    if (property.PropertyType == typeof(DbGeography)) 
+                    if (property.PropertyType == typeof(DbGeography))
                     {
                         return property.GetValue(objectToConvertToGeoJson) as DbGeography;
                     }
@@ -130,9 +100,9 @@ namespace GeoJsonLibrary
                 }
                 else
                 {
-                    if(!string.IsNullOrEmpty(geometryClassAttributePropertyName))
+                    if (!string.IsNullOrEmpty(geometryClassAttributePropertyName))
                     {
-                        if(string.Equals(geometryClassAttributePropertyName, property.Name, StringComparison.InvariantCultureIgnoreCase))
+                        if (string.Equals(geometryClassAttributePropertyName, property.Name, StringComparison.InvariantCultureIgnoreCase))
                         {
                             return property.GetValue(objectToConvertToGeoJson) as DbGeography;
                         }
@@ -152,6 +122,51 @@ namespace GeoJsonLibrary
             if (geoJsonAttribute != null)
             {
                 return geoJsonAttribute.PropertyName;
+            }
+            return null;
+        }
+
+        private List<GeoJsonPropertyAttribute> GetPropertyClassAttributes(Type type)
+        {
+            List<GeoJsonPropertyAttribute> result = new List<GeoJsonPropertyAttribute>();
+            var attributes = type.GetCustomAttributes<GeoJsonPropertyAttribute>(true);
+            foreach (var attribute in attributes)
+            {
+                if (!string.IsNullOrEmpty(attribute.PropertyName))
+                {
+                    result.Add(attribute);
+                }
+            }
+            return result;
+        }
+
+        private string GetPropertyName(PropertyInfo property, GeoJsonPropertyAttribute geoJsonPropertyAttribute)
+        {
+            var name = property.Name.ToLowerInvariant();
+            if (geoJsonPropertyAttribute != null)
+            {
+                if (!string.IsNullOrEmpty(geoJsonPropertyAttribute.PropertyName))
+                {
+                    name = geoJsonPropertyAttribute.PropertyName.ToLowerInvariant();
+                }
+                if (!string.IsNullOrEmpty(geoJsonPropertyAttribute.JsonPropertyName))
+                {
+                    name = geoJsonPropertyAttribute.JsonPropertyName.ToLowerInvariant();
+                }
+            }
+            return name;
+        }
+
+        private Type GetTypeOfList(Type objectToConvert)
+        {
+            foreach (Type interfaceType in objectToConvert.GetInterfaces())
+            {
+                var isGenericType = interfaceType.IsGenericType;
+                var isIlistOrIEnumerable = interfaceType.GetGenericTypeDefinition() == typeof(IList<>) || interfaceType.GetGenericTypeDefinition() == typeof(IEnumerable<>);
+                if (isGenericType && isIlistOrIEnumerable)
+                {
+                    return objectToConvert.GetGenericArguments()[0];
+                }
             }
             return null;
         }
