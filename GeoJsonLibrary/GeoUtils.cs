@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Spatial;
+using System.Data.Entity.Spatial;
 using System.Globalization;
 using System.Linq;
 using System.Text;
