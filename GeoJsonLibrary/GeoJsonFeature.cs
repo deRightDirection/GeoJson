@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
+using System.Data.Entity.Spatial;
 
 namespace GeoJsonLibrary
 {
     public class GeoJsonFeature
     {
         [JsonProperty("geometry")]
-        public GeoJsonGeometry Geometry { get; internal set; }
+        [JsonConverter(typeof(DbGeographyGeoJsonConverter))]
+        public DbGeography Geometry { get; internal set; }
 
         [JsonProperty("type")]
         public string Type { get { return "Feature"; } }

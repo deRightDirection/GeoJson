@@ -48,7 +48,8 @@ namespace GeoJsonLibrary
         {
             GeoJsonFeature feature = new GeoJsonFeature();
             var geometry = GetGeometry(objectToConvert);
-            feature.Geometry = new GeoJsonGeometry(geometry);
+            //Use the Geometry as is. The property will use the DbGeographyGeoJsonConvertor.
+            feature.Geometry = geometry;
             feature.Properties = GetFeatureData(objectToConvert);
             featureCollection.Features.Add(feature);
         }
